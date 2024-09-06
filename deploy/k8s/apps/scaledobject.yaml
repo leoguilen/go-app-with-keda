@@ -1,0 +1,51 @@
+apiVersion: keda.sh/v1alpha1
+kind: ScaledObject
+metadata:
+  name: producer-scaledobject
+spec:
+  scaleTargetRef:
+    name: producer-deployment
+  pollingInterval: 10
+  cooldownPeriod: 30
+  minReplicaCount: 0
+  maxReplicaCount: 10
+  triggers:
+    - type: postgresql
+      metadata:
+        connectionFromEnv: DATABASE_URI
+        query: "SELECT COUNT(*) FROM orders WHERE status = 'Pending'"
+        targetQueryValue: "1000"
+        activationTargetQueryValue: "1"
+        metricName: pending_orders
+---
+apiVersion: keda.sh/v1alpha1
+kind: TriggerAuthentication
+metadata:
+  name: keda-trigger-auth-rabbitmq-conn
+spec:
+  secretTargetRef:
+    - parameter: host
+      name: conn-secrets
+      key: RABBITMQ_URI
+---
+apiVersion: keda.sh/v1alpha1
+kind: ScaledObject
+metadata:
+  name: consumer-scaledobject
+spec:
+  scaleTargetRef:
+    name: consumer-deployment
+  pollingInterval: 10
+  cooldownPeriod: 30
+  minReplicaCount: 0
+  maxReplicaCount: 10
+  triggers:
+    - type: rabbitmq
+      metadata:
+        protocol: amqp
+        queueName: pending_orders
+        mode: QueueLength
+        value: "1000"
+        activationValue: "1"
+      authenticationRef:
+        name: keda-trigger-auth-rabbitmq-conn

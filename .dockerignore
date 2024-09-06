@@ -1,0 +1,6 @@
+.devcontainer/
+.github/
+deploy/
+docs/
+.gitignore
+README.md

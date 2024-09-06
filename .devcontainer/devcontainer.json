@@ -1,0 +1,21 @@
+{
+	"name": "Debian",
+	"image": "mcr.microsoft.com/devcontainers/base:bullseye",
+	"features": {
+		"ghcr.io/devcontainers/features/docker-in-docker:2": {},
+		"ghcr.io/devcontainers/features/go": {
+			"version": "latest"
+		},
+		"ghcr.io/rio/features/k3d:1": {},
+		"ghcr.io/rio/features/k9s:1": {},
+		"ghcr.io/devcontainers/features/github-cli": {}
+	},
+	"customizations": {
+		"vscode": {
+			"extensions": [
+				"golang.Go"
+			]
+		}
+	},
+	"remoteUser": "vscode"
+}

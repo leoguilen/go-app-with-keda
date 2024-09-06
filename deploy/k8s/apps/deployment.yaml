@@ -1,0 +1,57 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: producer-deployment
+  labels:
+    app: producer
+spec:
+  selector:
+    matchLabels:
+      app: producer
+  template:
+    metadata:
+      labels:
+        app: producer
+    spec:
+      containers:
+      - name: producer
+        image: k3d-registry:5000/producer:latest
+        # resources:
+        #   requests:
+        #     memory: "64Mi"
+        #     cpu: "0.5"
+        #   limits:
+        #     memory: "128Mi"
+        #     cpu: "0.5"
+        envFrom:
+        - secretRef:
+            name: conn-secrets
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: consumer-deployment
+  labels:
+    app: consumer
+spec:
+  selector:
+    matchLabels:
+      app: consumer
+  template:
+    metadata:
+      labels:
+        app: consumer
+    spec:
+      containers:
+      - name: consumer
+        image: k3d-registry:5000/consumer:latest
+        # resources:
+        #   requests:
+        #     memory: "64Mi"
+        #     cpu: "0.5"
+        #   limits:
+        #     memory: "128Mi"
+        #     cpu: "0.5"
+        envFrom:
+        - secretRef:
+            name: conn-secrets

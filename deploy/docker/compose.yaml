@@ -1,0 +1,63 @@
+networks:
+  backend:
+
+volumes:
+  postgres-data:
+  rabbitmq-data:
+
+services:
+  producer:
+    build:
+      context: ../../
+      dockerfile: Dockerfile
+      args:
+        - APP_NAME=producer
+    container_name: producer
+    environment:
+      - DATABASE_URI=postgres://postgres:postgres@postgres/orders?sslmode=disable&connect_timeout=5
+      - RABBITMQ_URI=amqp://guest:guest@rabbitmq:5672/
+    networks:
+      - backend
+  
+  consumer:
+    build:
+      context: ../../
+      dockerfile: Dockerfile
+      args:
+        - APP_NAME=consumer
+    container_name: consumer
+    environment:
+      - DATABASE_URI=postgres://postgres:postgres@postgres/orders?sslmode=disable&connect_timeout=5
+      - RABBITMQ_URI=amqp://guest:guest@rabbitmq:5672/
+    networks:
+      - backend
+
+  postgres:
+    build:
+      context: ./postgres
+      dockerfile: ./Dockerfile
+    container_name: postgres
+    environment:
+      - POSTGRES_DB=${POSTGRES_DB}
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+    ports:
+      - 5432:5432
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    networks:
+      - backend
+
+  rabbitmq:
+    image: rabbitmq:3-management-alpine
+    container_name: rabbitmq
+    environment:
+      - RABBITMQ_DEFAULT_USER=${RABBITMQ_DEFAULT_USER}
+      - RABBITMQ_DEFAULT_PASS=${RABBITMQ_DEFAULT_PASS}
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    volumes:
+      - rabbitmq-data:/var/lib/rabbitmq
+    networks:
+      - backend
