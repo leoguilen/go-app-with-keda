@@ -17,5 +17,7 @@
 			]
 		}
 	},
+	"onCreateCommand": "/bin/bash ./.devcontainer/on-create.sh > ~/on-create.log",
+	"postStartCommand": "/bin/bash ./.devcontainer/post-start.sh > ~/post-start.log",
 	"remoteUser": "vscode"
 }

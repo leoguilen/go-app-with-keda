@@ -9,5 +9,5 @@ generate_batch_of_orders () {
 while :
 do
 generate_batch_of_orders
-sleep 1.5
+sleep 1
 done

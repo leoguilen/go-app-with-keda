@@ -45,7 +45,7 @@ spec:
         protocol: amqp
         queueName: pending_orders
         mode: QueueLength
-        value: "1000"
+        value: "100"
         activationValue: "1"
       authenticationRef:
         name: keda-trigger-auth-rabbitmq-conn

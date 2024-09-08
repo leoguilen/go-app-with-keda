@@ -159,7 +159,7 @@ func main() {
 	wg.Add(1)
 	go func(ctx context.Context) {
 		defer wg.Done()
-		ticker := time.NewTicker(10 * time.Second)
+		ticker := time.NewTicker(time.Second)
 		for {
 			select {
 			case <-ticker.C:
